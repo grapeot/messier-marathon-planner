@@ -6,7 +6,7 @@
 messier_marathon/
   src/
     messier_catalog.py   # 梅西耶星表（110 个天体的 RA/Dec/星等/大小/类型）
-    planner.py           # 主程序：可见性计算、评分、报告生成、图表
+    planner.py           # 主程序：可见性计算、评分、报告生成、太阳+Top10高度图
     verify_viz.py        # 验证可视化：天图、热力图、Pareto、FOV 对比、时间线
   output/                # 生成产物（report.md, *.png, results.json）
   docs/                  # 项目文档
@@ -14,6 +14,12 @@ messier_marathon/
 ```
 
 ## 关键技术决策
+
+### 0. 主验证图
+
+`plot_top10_sun_altitude()` 把太阳高度和 Top10 推荐目标高度画在同一张图上。横轴使用北京时间，纵轴使用高度角。太阳 -12° 线和目标 15° 线作为可见性阈值。
+
+这张图承担人工 sanity check 的职责：推荐目标应该在暗夜窗口内达到较高高度，而且目标之间的最佳时间应该覆盖整个夜晚，而不是都挤在同一小时。
 
 ### 1. 可见性判定
 

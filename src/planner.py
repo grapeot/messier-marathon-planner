@@ -295,6 +295,46 @@ def plot_altitude_curves(results, times_utc, top_n=20, output_file="altitude_cur
     return output_file
 
 
+def plot_top10_sun_altitude(results, times_utc, output_file="top10_sun_altitude.png"):
+    """Plot Sun plus the 10 recommended targets on one altitude-vs-time chart."""
+    fig, ax = plt.subplots(figsize=(14, 8))
+
+    times_local = times_utc.datetime + timedelta(hours=UTC_OFFSET)
+    times_num = mdates.date2num(times_local)
+
+    sun_altaz = get_sun(times_utc).transform_to(AltAz(obstime=times_utc, location=BEIJING))
+    sun_alt = sun_altaz.alt.deg
+    ax.plot(times_num, sun_alt, color="#e74c3c", linewidth=2.5, linestyle="--", label="Sun")
+    ax.axhline(y=SUN_ALT_LIMIT, color="#7f8c8d", linestyle=":", linewidth=1.5, label=f"Sun {SUN_ALT_LIMIT}°")
+    ax.axhline(y=OBJ_ALT_MIN, color="#95a5a6", linestyle=":", linewidth=1.0, label=f"Target {OBJ_ALT_MIN}°")
+    ax.fill_between(times_num, 0, 90, where=sun_alt < SUN_ALT_LIMIT, color="#2c3e50", alpha=0.08, label="usable dark window")
+
+    colors = plt.cm.tab10(np.linspace(0, 1, 10))
+    for i, r in enumerate(results[:10]):
+        alt = r["alt_curve"]
+        mask = alt > 0
+        label = f"{i+1}. M{r['m_num']} ({r['max_alt']:.0f}°, {r['best_time_local'].strftime('%H:%M')})"
+        ax.plot(times_num[mask], alt[mask], color=colors[i], linewidth=1.8, alpha=0.9, label=label)
+
+        best_time_num = mdates.date2num(r["best_time_local"])
+        ax.scatter([best_time_num], [r["max_alt"]], color=colors[i], s=30, edgecolor="white", linewidth=0.8, zorder=5)
+
+    ax.set_xlabel("Local Time (UTC+8)")
+    ax.set_ylabel("Altitude (degrees)")
+    ax.set_title(f"Sun and Top 10 Recommended Messier Targets — Beijing {DATE}")
+    ax.set_ylim(-25, 90)
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
+    ax.xaxis.set_major_locator(mdates.HourLocator(interval=2))
+    plt.setp(ax.xaxis.get_majorticklabels(), rotation=45, ha="right")
+    ax.legend(loc="upper left", fontsize=7, ncol=2)
+    ax.grid(True, alpha=0.25)
+
+    plt.tight_layout()
+    plt.savefig(output_file, dpi=180, bbox_inches="tight")
+    plt.close()
+    return output_file
+
+
 def plot_scoring_bars(results, top_n=20, output_file="scoring_bars.png"):
     """Plot scoring breakdown for top N objects."""
     fig, ax = plt.subplots(figsize=(12, max(6, top_n * 0.35)))
@@ -457,6 +497,14 @@ def generate_report(results, times_utc):
 5. **综合评分**：加权组合以上因素（高度30% + 亮度35% + 可见时长10% + FOV匹配25%）
 6. **推荐曝光**：根据面亮度、设备口径和天体类型估算的最佳累计曝光时间
 
+## 主验证图：太阳与 Top 10 目标高度
+
+这张图用于最快速地查证推荐是否合理。横轴是北京时间，纵轴是高度角。红色虚线是太阳，灰色虚线是太阳 -12° 暗夜线，淡蓝色阴影是可用拍摄窗口。每条彩色曲线是一个推荐目标，曲线上的圆点表示它在暗夜窗口内的最高位置。
+
+读图方法很直接：一个目标越早进入阴影区、曲线越高、停留时间越长，就越适合今晚拍摄。Top 10 中 M57、M29、M92、M94、M13 都在暗夜窗口内达到 80° 以上，这也是它们进入推荐列表前列的主要原因。
+
+![](top10_sun_altitude.png)
+
 """
 
     # Summary table
@@ -596,7 +644,8 @@ for obj in messier_catalog:
 ---
 
 *报告生成时间：{datetime.now(UTC).strftime('%Y-%m-%d %H:%M:%S')} UTC*  
-*数据来源：SEDS Messier Catalog, ZWO 官方参数*  
+*数据来源：[SEDS Messier Catalog](http://spider.seds.org/), ZWO 官方参数*  
+*源代码：[github.com/grapeot/messier-marathon-planner](https://github.com/grapeot/messier-marathon-planner)*  
 *本报告为临时版本，仅供内部参考*
 """
     return report
@@ -658,6 +707,7 @@ def main():
     # Generate plots (use S50 ranking as primary since S50 is the higher-spec device)
     print("生成可视化图表...")
     plot_altitude_curves(ranked_s50, times_utc, top_n=20, output_file="output/altitude_curves.png")
+    plot_top10_sun_altitude(ranked_s50, times_utc, output_file="output/top10_sun_altitude.png")
     plot_scoring_bars(ranked_s50, top_n=20, output_file="output/scoring_bars.png")
 
     # Generate report
@@ -681,6 +731,7 @@ def main():
 === 完成 ===
 - 报告: output/report.md
 - 高度曲线图: output/altitude_curves.png
+- 太阳+Top10高度图: output/top10_sun_altitude.png
 - 评分图: output/scoring_bars.png
 - JSON数据: output/results.json
 """)
