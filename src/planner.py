@@ -560,6 +560,18 @@ def generate_report(results, times_utc):
         report += f"- **建议曝光**：S50 约 {r['est_exposure_s50']:.0f} 分钟 / S30 Pro 约 {r['est_exposure_s30']:.0f} 分钟\n"
         report += f"- **选择理由**：暗夜窗口高度 {r['max_alt']:.0f}°（高空有利减少大气消光），面亮度 {r['sb_arcsec2']:.1f} mag/arcsec²，可见窗口 {r['visible_hours']:.1f} 小时\n\n"
 
+    report += """## 复用这个规划工具
+
+这个报告背后的完整代码已经整理成公开仓库：[github.com/grapeot/messier-marathon-planner](https://github.com/grapeot/messier-marathon-planner)。仓库包含梅西耶星表、可见性计算、评分逻辑、测试和可视化脚本，`output/report.md` 是由代码直接生成的结果。
+
+仓库里也包含一个可交给 AI agent 使用的 workflow skill：[`skills/messier_marathon_planner.md`](https://github.com/grapeot/messier-marathon-planner/blob/master/skills/messier_marathon_planner.md)。想换城市、日期、设备或筛选条件时，可以把仓库链接交给支持项目说明/skills 的 AI coding agent，并说明你的观测地点和设备。Agent 应先安装这个 skill，再按其中的流程修改配置、运行测试、重新生成报告和验证图。
+
+一个可直接使用的提示词是：
+
+> 请安装并使用这个 skill 帮我规划梅西耶马拉松：https://github.com/grapeot/messier-marathon-planner 。观测地点是[城市/经纬度]，日期是[当地日期]，设备是[望远镜/相机参数]。
+
+"""
+
     # Cross-verification for top 5
     report += "---\n\n## 附录 A：5 个推荐目标的交叉验证\n\n"
     report += "以下是每个推荐目标的可公开验证链接。读者可以使用这些链接独立核对我们计算的高度、面亮度和可见性。\n\n"
