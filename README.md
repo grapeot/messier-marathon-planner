@@ -32,6 +32,16 @@ open output/report.md
 .venv/bin/python -m pytest tests/ -v
 ```
 
+## 作为 Skill 使用
+
+本仓库自带一个可交给 AI agent 安装的 workflow skill：`skills/messier_marathon_planner.md`。
+
+最简单的用法是把仓库链接发给支持 skills / agent instructions 的 AI coding agent：
+
+> 请安装并使用这个 skill 帮我规划梅西耶马拉松：https://github.com/grapeot/messier-marathon-planner
+
+Agent 应把 `skills/messier_marathon_planner.md` 加入目标 workspace 的 skill discovery 链：如果 workspace 有 `rules/skills/INDEX.md` 或 `skills/INDEX.md`，就在索引里增加入口；如果没有 skills 目录，就在项目级 `AGENTS.md` 中加入指针。
+
 ## 最重要的验证图
 
 `output/top10_sun_altitude.png` 是最适合人工查证的图：横轴是北京时间，纵轴是高度角，红色虚线是太阳，灰色虚线是太阳 -12° 暗夜线。Top 10 推荐目标的高度曲线会叠在同一张图上，曲线圆点表示暗夜窗口内的最高位置。

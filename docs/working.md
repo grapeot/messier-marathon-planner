@@ -16,6 +16,7 @@
 - 初始化独立 git repo，设置 .gitignore
 - 创建 GitHub public repo 并推送
 - 新增太阳 + Top10 推荐目标高度图，作为报告里的主验证图，便于人工核对目标是否在暗夜窗口内足够高
+- 新增 `skills/messier_marathon_planner.md`，把项目沉淀为可安装的 AI workflow skill
 
 ## Lessons Learned
 

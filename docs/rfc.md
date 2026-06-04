@@ -10,6 +10,7 @@ messier_marathon/
     verify_viz.py        # 验证可视化：天图、热力图、Pareto、FOV 对比、时间线
   output/                # 生成产物（report.md, *.png, results.json）
   docs/                  # 项目文档
+  skills/                # 可安装 workflow skill
   tests/                 # 测试
 ```
 
@@ -60,6 +61,10 @@ messier_marathon/
 ### 5. 目标过滤
 
 排除 BIN（双星, 如 M40）和 AST（星群/恒星云, 如 M24, M73），因为它们不适合天文摄影。
+
+### 6. Skill 暴露方式
+
+公开仓库只放技术 workflow skill：`skills/messier_marathon_planner.md`。它不包含私有邮箱、服务器、发布流程或个人路径。使用方只需要把 GitHub 链接交给 AI agent，让 agent 把该 skill 接入自己的 workspace skill discovery 链。
 
 ## 数据来源
 
