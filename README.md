@@ -46,11 +46,23 @@ Agent 应把 `skills/messier_marathon_planner.md` 加入目标 workspace 的 ski
 
 `output/top10_sun_altitude.png` 是最适合人工查证的图：横轴是北京时间，纵轴是高度角，红色虚线是太阳，灰色虚线是太阳 -12° 暗夜线。Top 10 推荐目标的高度曲线会叠在同一张图上，曲线圆点表示暗夜窗口内的最高位置。
 
+![太阳与 Top10 推荐目标高度图](docs/images/top10_sun_altitude.png)
+
 这张图能直接回答三个问题：
 
 - 推荐目标是否真的在暗夜窗口内足够高
 - 目标之间的最佳拍摄时间是否冲突
 - 太阳高度和目标高度的组合是否支持报告中的排序
+
+## 其他示例可视化
+
+Pareto 图用于检查目标推荐是否落在“高高度 + 高面亮度”的优势区域。
+
+![Pareto 前沿分析](docs/images/verify_pareto.png)
+
+FOV 对比图用于检查目标角大小和 S50 / S30 Pro 视场是否匹配。
+
+![FOV 对比](docs/images/verify_fov_comparison.png)
 
 ## 设备参数
 
